@@ -73,7 +73,7 @@ class DownloadTask(object):
     @staticmethod
     def temp_path():
         """Suggesting a temporary file for storing the downloaded chunk"""
-        return path.join(mkdtemp(), uuid1())
+        return path.join(mkdtemp(), str(uuid1()))
 
 
 
