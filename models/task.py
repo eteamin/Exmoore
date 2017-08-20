@@ -6,6 +6,8 @@ from threading import Thread
 
 from kivy.network.urlrequest import UrlRequest
 
+CHUNK_SIZE = 4098
+
 
 class DownloadTask(object):
     def __init__(self, url: str, threads: int, download_report: Queue):
@@ -58,11 +60,15 @@ class DownloadTask(object):
         finalize.start()
 
     def _wrap_them_up(self):
-        # Read files one by one and put them all together
+        """Read files one by one and put them all together"""
         with open('final', 'wb') as final:
             for thread, tmp_path in self.requests.items():
                 with open(tmp_path, 'rb') as tmp:
-                    final.write(tmp.read())
+                    while True:
+                        chunk = tmp.read(CHUNK_SIZE)
+                        if not chunk:
+                            break
+                        final.write(chunk)
 
     def _calculate_total_downloaded(self):
         total = 0
