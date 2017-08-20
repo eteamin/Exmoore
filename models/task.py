@@ -48,7 +48,7 @@ class DownloadTask(object):
             self.requests[thread] = temp_path
 
     def _on_requests_progress(self, req, current, total):
-        self.bytes_downloaded_per_thread[req.ident] = current / total
+        self.bytes_downloaded_per_thread[req.ident] = current
         self._calculate_total_downloaded()
 
     def _on_request_success(self, req, resp):

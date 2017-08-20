@@ -17,7 +17,7 @@ from models.task import DownloadTask
 
 
 screen_manager = ScreenManager(transition=FadeTransition())
-progress_bar = ProgressBar()
+progress_bar = ProgressBar(max=0)
 
 
 class MainScreen(Screen):
@@ -80,11 +80,11 @@ class MainScreen(Screen):
     def on_start_press(self, *args):
         self.task = DownloadTask(self.url_input.text, 2, self.report_queue)
         self.add_widget(progress_bar)
-        Clock.schedule_interval(self.update_progress_bar, 0.5)
+        Clock.schedule_interval(self.update_progress_bar, 1)
 
     def update_progress_bar(self, *args):
         try:
-            downloaded, total = self.report_queue.get(timeout=0.1)
+            downloaded, total = self.report_queue.get(block=False)
         except QueueEmpty:
             return
         if not progress_bar.max:
