@@ -14,6 +14,7 @@ class DownloadTask(object):
         self.url = url
         self.threads = threads
         self.content_length = 0
+        self.total_downloaded = 0
         self.download_report = download_report
         self.bytes_downloaded_per_thread = {}
         self.requests = {}
@@ -71,10 +72,9 @@ class DownloadTask(object):
                         final.write(chunk)
 
     def _calculate_total_downloaded(self):
-        total = 0
         for k, v in self.bytes_downloaded_per_thread.items():
-            total += v
-        self.download_report.put(total)
+            self.total_downloaded += v
+        self.download_report.put((self.total_downloaded, self.content_length))
 
     @staticmethod
     def temp_path():
