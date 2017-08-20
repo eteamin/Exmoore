@@ -80,7 +80,7 @@ class MainScreen(Screen):
     def on_start_press(self, *args):
         self.task = DownloadTask(self.url_input.text, 2, self.report_queue)
         self.add_widget(progress_bar)
-        Clock.schedule_interval(self.update_progress_bar, 1)
+        self.event = Clock.schedule_interval(self.update_progress_bar, 1)
 
     def update_progress_bar(self, *args):
         try:
@@ -90,6 +90,8 @@ class MainScreen(Screen):
         if not progress_bar.max:
             progress_bar.max = total
         progress_bar.value = downloaded
+        if downloaded == total:
+            Clock.unschedule(self.event)
 
 
 class SettingsScreen(Screen):
