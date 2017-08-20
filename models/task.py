@@ -23,7 +23,7 @@ class DownloadTask(object):
         UrlRequest(url=self.url, on_success=self._on_headers_fetched, method='HEAD')
 
     def _on_headers_fetched(self, req, resp):
-        self.content_length = req.resp_headers.get('Content-Length')
+        self.content_length = int(req.resp_headers.get('Content-Length'))
         self._start_requests()
 
     def _start_requests(self):
@@ -80,7 +80,4 @@ class DownloadTask(object):
     def temp_path():
         """Suggesting a temporary file for storing the downloaded chunk"""
         return path.join(mkdtemp(), str(uuid1()))
-
-
-
 
