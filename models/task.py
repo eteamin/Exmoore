@@ -10,11 +10,12 @@ CHUNK_SIZE = 4098
 
 
 class DownloadTask(object):
-    def __init__(self, url: str, threads: int, download_report: Queue):
+    def __init__(self, url: str, threads: int, download_report: Queue, download_path):
         self.url = url
         self.threads = threads
         self.content_length = 0
         self.total_downloaded = 0
+        self.download_path = download_path
         self.download_report = download_report
         self.bytes_downloaded_per_thread = {}
         self.requests = {}
@@ -29,10 +30,8 @@ class DownloadTask(object):
 
     def _start_requests(self):
         """
-        
-            Each requests takes responsibility for a part of the file by passing range to its header.
-            Storing the requests to self.requests; key: thread.ident, value: temp_path
-            
+        Each requests takes responsibility for a part of the file by passing range to its header.
+        Storing the requests to self.requests; key: thread.ident, value: temp_path 
         """
         shares = self.content_length / self.threads
         for i in range(self.threads):
@@ -62,7 +61,7 @@ class DownloadTask(object):
 
     def _wrap_them_up(self):
         """Read files one by one and put them all together"""
-        with open('final', 'wb') as final:
+        with open(self.final_path, 'wb') as final:
             for thread, tmp_path in self.requests.items():
                 with open(tmp_path, 'rb') as tmp:
                     while True:
@@ -87,3 +86,10 @@ class DownloadTask(object):
         """Suggesting a temporary file for storing the downloaded chunk"""
         return path.join(mkdtemp(), str(uuid1()))
 
+    @property
+    def final_path(self):
+        return path.join(self.download_path, self.filename)
+
+    @property
+    def filename(self):
+        return self.url.split('/')[-1]
