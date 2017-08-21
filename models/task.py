@@ -6,7 +6,7 @@ from threading import Thread
 
 from kivy.network.urlrequest import UrlRequest
 
-CHUNK_SIZE = 4098
+CHUNK_SIZE = 4096
 
 
 class DownloadTask(object):
