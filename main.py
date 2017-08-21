@@ -167,7 +167,13 @@ class SettingsScreen(Screen):
         self.submit_dir_selection.bind(on_release=partial(self.on_location_submit))
         self.choose_downloads_location.bind(on_release=partial(self.on_location_clicked))
 
-        self.thread_show_button = Button(text='Threads', size_hint=(None, None), pos=(300, 200))
+        self.thread_show_button = Button(
+            text='Threads',
+            size_hint=(None, None),
+            size=(150, 50),
+            background_color=(0.6, 0.3, 0.8, 0.8),
+            pos_hint={'center_x': 0.5, 'center_y': 0.4}
+        )
         self.thread_show_button.bind(on_release=self.show_drop_down, on_touch_move=touch_move)
 
         self.add_widget(self.exmoore)
@@ -183,13 +189,16 @@ class SettingsScreen(Screen):
             pos_hint={'center_x': 0.5, 'center_y': 0.1},
         )
         self.add_widget(self.threads_selection)
-        self.threads_selection.bind(on_select=lambda instance, x: setattr(settings, 'threads', int(x)))
+        self.threads_selection.bind(on_select=partial(self.on_thread_selection))
         for i in range(1, 5):
-            item = Button(text=str(i), size_hint=(None, None), size=(100, 50))
+            item = Button(text=str(i), size_hint=(None, None), size=(50, 25))
             item.bind(on_release=lambda btn: self.threads_selection.select(btn.text))
             self.threads_selection.add_widget(item)
 
         self.threads_selection.open(button)
+
+    def on_thread_selection(self, instance, text):
+        setattr(settings, 'threads', int(text))
 
     def on_location_submit(self, *args):
         self.update_location(self.file_chooser.selection[0])
