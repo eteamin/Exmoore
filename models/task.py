@@ -88,6 +88,7 @@ class DownloadTask(object):
 
     @property
     def final_path(self):
+        """The final path the final file will sit in """
         return path.join(self.download_path, self.filename)
 
     @property
